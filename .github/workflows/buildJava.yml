@@ -18,6 +18,15 @@ jobs:
           distribution: corretto
           java-version: '21'
           cache: maven
+      - name: Build + SonarCloud (verify + sonar)
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+        run: |
+          mvn -B -ntp verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.projectKey=$(echo ${{ github.repository }} | sed 's-/-_-')
 
-      - name: Build with Maven (tests + package)
-        run: mvn -B -ntp package
+
+     
